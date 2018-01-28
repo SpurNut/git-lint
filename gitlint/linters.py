@@ -17,7 +17,6 @@ import collections
 import functools
 import os
 import os.path
-import re
 import string
 import subprocess
 
@@ -73,6 +72,7 @@ def lint_command(name, program, arguments, filter_regex, filename, lines):
     Returns: dict: a dict with the extracted info from the message.
     """
     output = utils.get_output_from_cache(name, filename)
+    # print("OUTPUT " + str(output))
 
     if output is None:
         call_arguments = [program] + arguments + [filename]
@@ -90,9 +90,12 @@ def lint_command(name, program, arguments, filter_regex, filename, lines):
                 }
             }
         output = output.decode('utf-8')
+        # print("OUTPUT again " + output)
         utils.save_output_in_cache(name, filename, output)
 
-    output_lines = output.split(os.linesep)
+    output_lines = output.split("\n")
+
+    # print("OUTPUT LINES " +str(output_lines))
 
     if lines is None:
         lines_regex = r'\d+'
@@ -100,10 +103,16 @@ def lint_command(name, program, arguments, filter_regex, filename, lines):
         lines_regex = '|'.join(map(str, lines))
     lines_regex = '(%s)' % lines_regex
 
+    # print("LINES REGEX NUM MAYBE " + lines_regex)
+
+    regex_filename = filename.replace("\\", "\\\\")
+    # print("FILENAME REGEX " + regex_filename)
+
     groups = ('line', 'column', 'message', 'severity', 'message_id')
     filtered_lines = utils.filter_lines(output_lines,
-                                        filter_regex.format(lines=lines_regex,
-                                                            filename=re.escape(filename)),
+                                        filter_regex.format(
+                                        lines=lines_regex,
+                                        filename=regex_filename),
                                         groups=groups)
 
     result = []

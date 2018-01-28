@@ -37,7 +37,7 @@ scss:
   extensions:
   - .scss
   command: scss-lint
-  filter: "^{filename}:(?P<line>{lines})(:(?P<column>\\d+))? \\[(?P<severity>.+)\\]( (?P<message_id>.+):)? (?P<message>.+)"
+  filter: "^{filename}:(?P<line>{lines}) \\[(?P<severity>.+)\\] (?P<message>.+)"
   installation: "gem install scss-lint or go to https://github.com/causes/scss-lint"
 
 # Javascript
@@ -90,20 +90,20 @@ phpcs:
 pylint:
   extensions:
   - .py
-  command: pylint
+  command: pylint.exe
   arguments:
   - "--rcfile={DEFAULT_CONFIGS}/pylintrc"
   - "--output-format=text"
   - "--msg-template='{{abspath}}:{{line}}:{{column}}: [{{category}}:{{symbol}}] {{obj}}: {{msg}}'"
   - "--reports=n"
-  filter: "^{filename}:(?P<line>{lines}):((?P<column>\\d+):)? \\[(?P<severity>.+):(?P<message_id>\\S+)\\]\\s+(: )?(?P<message>.+)$"
+  filter: "^{filename}:(?P<line>{lines}):((?P<column>\\d+):)? \\[(?P<severity>.+):(?P<message_id>\\S+)\\] (\\S+)?(:)? (?P<message>.+)$"
   installation: "Run pip install pylint."
 
 # Sample output: gitlint/__init__.py:68:80: E501 line too long (80 > 79 characters)
 pep8:
   extensions:
   - .py
-  command: pep8
+  command: pep8.exe
   arguments:
   - "--max-line-length=80"
   filter: "^{filename}:(?P<line>{lines}):((?P<column>\\d+):)? (?P<message_id>\\S+) (?P<message>.+)$"
@@ -180,19 +180,9 @@ yaml:
   extensions:
   - .yaml
   - .yml
-  command: yamllint
-  arguments:
-  - "--format"
-  - "parsable"
-  - "--config-data"
-  - "relaxed"
-  # Matches either:
-  # - syntax error, on any line
-  # - other error, on a modified line only
-  filter: "^{filename}:(?P<line>{lines}|\\d+\
-           (?=:\\d+: \\[error\\] syntax error:)):(?P<column>\\d+): \
-           \\[(?P<severity>\\S+)\\] (?P<message>.+)$"
-  installation: "Run pip install yamllint."
+  command: yaml_linter.py
+  filter: "(?P<message>.+)$"
+  installation: "Run pip install PyYAML."
 
 # INI
 ini:
@@ -313,21 +303,3 @@ coffeelint:
   - "--file={DEFAULT_CONFIGS}/coffeelint.json"
   filter: "{filename},(?P<line>{lines}),.*,(?P<severity>.+),(?:\\[stdin\\]:\\d+:(?P<column>\\d+): .*: )?(?P<message>.+)"
   installation: "npm install -g coffeelint"
-
-# C++
-# Sample output:
-# main.cpp:0:  No copyright message found.  You should have a line: "Copyright [year] <Copyright Owner>"  [legal/copyright] [5]
-cpplint:
-  extensions:
-  - .c
-  - .cc
-  - .cpp
-  - .c++
-  - .h
-  - .hpp
-  - .h++
-  command: cpplint
-  requirements:
-  - cpplint
-  filter: "^{filename}:(?P<line>{lines}): (?P<message>.+) \\[(?P<message_id>.+)\\] \\[(?P<severity>\\d+)\\]"
-  installation: "Run pip install cpplint."
