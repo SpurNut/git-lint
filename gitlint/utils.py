@@ -27,24 +27,17 @@ def filter_lines(lines, filter_regex, groups=None):
 
     Returns: list[string]: the list of filtered lines.
     """
-    # print("FILTER REGEX " + str(filter_regex))
     pattern = re.compile(filter_regex)
-    # print("LINES FOR FILTER " + str(lines))
     for line in lines:
-        # print("LINE THAT IS FILTERED " + line)
         match = pattern.search(line)
-        # print("MATCH " + str(match))
         if match:
             if groups is None:
-                # print("LINE that is YIELD " + str(line))
                 yield line
             elif len(groups) == 1:
                 yield match.group(groups[0])
             else:
                 matched_groups = match.groupdict()
-                # print("MATCHED GROUPS " + str(matched_groups))
                 tuple_groups =  tuple(matched_groups.get(group) for group in groups)
-                # print("TUPLE GROUP " + str(tuple_groups))
                 yield tuple(matched_groups.get(group) for group in groups)
 
 
@@ -83,8 +76,6 @@ def _get_cache_filename(name, filename):
     import copy
     filename_for_cache = os.path.basename(copy.deepcopy(filename))
     filename = os.path.abspath(filename)
-    # print("Filename " + filename)
-    # print("Filename for Cache " + filename_for_cache)
     home_folder = os.path.expanduser('~')
     base_cache_dir = os.path.join(home_folder, '.git-lint', 'cache')
 
