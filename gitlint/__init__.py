@@ -211,7 +211,6 @@ def main(argv, stdout=sys.stdout, stderr=sys.stderr):
         modified_files = vcs.modified_files(repository_root,
                                             tracked_only=arguments['--tracked'],
                                             commit=commit)
-        # print("MODIFIED LINES VCS " + str(modified_files))
 
     linter_not_found = False
     files_with_problems = 0
@@ -228,19 +227,12 @@ def main(argv, stdout=sys.stdout, stderr=sys.stderr):
         if arguments['--force']:
             modified_lines = None
         else:
-            # print("ICH BIN HIER")
-            # print("MODIFIED FILES[filename] " + str(modified_files[filename]))
-            # print("FILENAME FOR MODIFIED FILES " + filename)
             modified_lines = vcs.modified_lines(filename,
                                                 modified_files[filename],
                                                 commit=commit)
 
-        # print("VCS MODIFIED LINES " + str(modified_lines))
-
-        # filter_filename = filename.replace("\\","\\\\")
         result = linters.lint(
             filename, modified_lines, gitlint_config)
-        # print("RESULT " + str(result))
         result = result[filename]
 
         output_lines = []
